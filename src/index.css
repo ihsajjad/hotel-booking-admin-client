@@ -1,0 +1,12 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: 0;
+}
+
+.login-container {
+  min-height: 100vh;
+  width: 100vw;
+  background-color: beige;
+}
