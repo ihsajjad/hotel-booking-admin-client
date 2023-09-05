@@ -1,4 +1,14 @@
+import { useContext } from "react";
+import { AuthContext } from "./components/AuthProvider";
+
 const Login = () => {
+  const { googleSignIn, user } = useContext(AuthContext);
+  console.log(user);
+  const handleGoogleSignIn = () => {
+    googleSignIn()
+      .then((res) => console.log(res))
+      .catch((error) => console.log(error.massage));
+  };
   return (
     <div className="login-container">
       <div className="form-container">
@@ -16,7 +26,7 @@ const Login = () => {
         </form>
 
         <div className="social-login">
-          <button>G</button>
+          <button onClick={handleGoogleSignIn}>G</button>
         </div>
       </div>
     </div>
