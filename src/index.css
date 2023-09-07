@@ -1,8 +1,21 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  outline: 0;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-color: #1f244d;
+  --second-bg-color: #323946;
+  --text-color: #fff;
+  --main-color: blue;
+  --PhoneInputCountryFlag-aspectRatio: 1.5;
+}
+
+.PhoneInput--focus .PhoneInputInput {
+  outline: none;
+}
+
+.custom-btn-outline {
+  @apply bg-[var(--main-color)] text-white py-1 px-2 rounded-lg border-2 border-[var(--main-color)] hover:bg-transparent hover:text-[var(--main-color)] duration-500;
 }
 
 .login-container {
@@ -22,58 +35,22 @@
   border-radius: 5px;
 }
 
-h3 {
-  text-align: center;
-  font-size: 30px;
-  margin-bottom: 20px;
+.form-input {
+  @apply border border-[var(--main-color)] w-full outline-none py-1 px-2 rounded md:text-lg  mt-1;
 }
 
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+.lgin-btn {
+  @apply bg-[var(--main-color)] text-white p-1 w-12 h-12 border-2 border-[var(--main-color)] hover:bg-transparent hover:text-[var(--main-color)] duration-500  rounded-full text-3xl flex items-center justify-center;
 }
 
-label {
-  font-size: 21px;
+.modal-cls-btn {
+  @apply absolute -top-3 -right-3 bg-red-500 w-8 h-8 text-2xl text-white rounded-full flex items-center justify-center;
 }
 
-input {
-  background: beige;
-  font-size: 18px;
-  padding: 5px 10px;
-  width: 100%;
-  border: 1px solid blue;
-  border-radius: 5px;
+.table-btn-layout {
+  @apply md:text-xl text-white py-2 md:px-3 px-2 rounded;
 }
 
-input[type="submit"] {
-  background-color: blue;
-  color: white;
-  font-size: 20px;
-}
-
-.social-login {
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 20px;
-}
-
-.social-login button {
-  width: 40px;
-  height: 40px;
-  font-size: 30px;
-  border: 1px solid blue;
-  border-radius: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition-duration: 0.3s;
-}
-
-.social-login button:hover {
-  background-color: blue;
-  color: white;
+.form-title {
+  @apply md:text-3xl text-xl text-center text-[var(--main-color)] font-bold md:mb-4 mb-2;
 }

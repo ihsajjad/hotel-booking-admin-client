@@ -6,26 +6,31 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Login from "./Login.jsx";
 import AuthProvider from "./components/AuthProvider.jsx";
 import PrivetRouter from "./components/PrivetRouter.jsx";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: (
+      <PrivetRouter>
+        <App />
+      </PrivetRouter>
+    ),
   },
   {
     path: "/login",
-    element: (
-      <PrivetRouter>
-        <Login />
-      </PrivetRouter>
-    ),
+    element: <Login />,
   },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <AuthProvider>
-      <RouterProvider router={router} />
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
+    </QueryClientProvider>
   </React.StrictMode>
 );
