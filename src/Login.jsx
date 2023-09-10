@@ -1,9 +1,10 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "./components/AuthProvider";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const { googleSignIn, logInUser } = useContext(AuthContext);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
   const handleGoogleSignIn = () => {
     googleSignIn()
@@ -25,10 +26,9 @@ const Login = () => {
       .then((res) => {
         if (res.user) {
           navigate("/");
-          console.log("login success");
         }
       })
-      .catch((err) => console.log(err.message));
+      .catch((err) => setError(err.message));
   };
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-2">
@@ -56,6 +56,7 @@ const Login = () => {
               className="form-input"
             />
           </div>
+          <span className="text-red-500">{error}</span>
           <input
             type="submit"
             value="Login"

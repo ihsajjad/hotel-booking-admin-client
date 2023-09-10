@@ -8,6 +8,7 @@ import {
   signInWithPopup,
   signOut,
 } from "firebase/auth";
+import { useQuery } from "@tanstack/react-query";
 
 export const AuthContext = createContext(null);
 const auth = getAuth(app);
@@ -38,6 +39,22 @@ const AuthProvider = ({ children }) => {
 
     loadUserData(user?.email);
   }, [user?.email]);
+
+  // loading all bookings of individual user
+  const { refetch: refetchMybookings, data: myBookings = [] } = useQuery({
+    enabled: !!user?.email && userData?.role === "user",
+    queryKey: ["bookings"],
+    queryFn: async () => {
+      const res = await fetch(
+        `http://localhost:5000/my-bookings/${user?.email}`
+      );
+      const data = await res.json();
+      if (data.length > 0) {
+        return data;
+      }
+      return [];
+    },
+  });
 
   // sign in with google
   const googleProvider = new GoogleAuthProvider();
@@ -77,6 +94,8 @@ const AuthProvider = ({ children }) => {
     logOut,
     googleSignIn,
     userData,
+    myBookings,
+    refetchMybookings,
   };
 
   return (

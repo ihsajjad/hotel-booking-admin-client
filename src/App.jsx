@@ -3,6 +3,7 @@ import { useContext } from "react";
 import { AuthContext } from "./components/AuthProvider";
 import UserDashboard from "./components/UserDashboard";
 import HotelManagerDashboard from "./components/HotelManagerDashboard";
+import { ReactNotifications } from "react-notifications-component";
 
 function App() {
   const { logOut, userData } = useContext(AuthContext);
@@ -15,7 +16,8 @@ function App() {
   const isHotelManager = userData?.role?.toLowerCase() === "hotelmanager";
   return (
     <main className="min-h-screen w-full bg-blue-50">
-      <div className="w-full md:px-10 p-2 flex items-center justify-between bg-[var(--main-color)] sticky left-0 top-0">
+      {/* navbar */}
+      <div className="w-full md:px-10 p-2 flex items-center justify-between bg-[var(--main-color)] sticky z-10 left-0 top-0">
         <div>
           <h3 className="text-2xl font-bold text-white">Hotel Booking</h3>
         </div>
@@ -23,7 +25,7 @@ function App() {
           Log Out
         </button>
       </div>
-
+      <ReactNotifications isMobile={true} />
       {(isUser && <UserDashboard />) ||
         (isHotelManager && <HotelManagerDashboard />)}
     </main>

@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { Store } from "react-notifications-component";
 import CreateableSelect from "react-select/creatable";
 
 const HotelManagerDashboard = () => {
@@ -29,21 +30,21 @@ const HotelManagerDashboard = () => {
   });
 
   // handling confirm bookin and updating the booking status to the database
-  const handleConfirmBooking = (e) => {
+  const handleConfirmBooking = async (e) => {
     e.preventDefault();
     setError("");
-    const managerPhone = e.target.managerPhone.value;
-    const roomQuantity = parseInt(e.target.roomQuantity.value);
-
-    if (managerPhone.length < 10) {
-      return setError("Invalid Number");
-    }
+    const managerPhone = e.target?.managerPhone?.value;
+    const roomQuantity = parseInt(
+      document.getElementById("roomQuantity").innerHTML
+    );
 
     const rooms = [];
     selectedOption.map((item) => rooms.push(item.value));
 
     // validating room info before sending to the database
-    if (rooms.length < 1) {
+    if (managerPhone?.length < 10 || managerPhone?.length > 10) {
+      return setError("Invalid Number");
+    } else if (rooms.length < 1) {
       return setError("Select at least one room");
     } else if (rooms.length !== roomQuantity) {
       return setError(
@@ -52,17 +53,39 @@ const HotelManagerDashboard = () => {
     }
     fetch(`http://localhost:5000/update-single-booking/${bookingId}`, {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers: {
+        "content-type": "application/json",
+      },
       body: JSON.stringify({
         bookedRoom: { managerPhone, rooms },
         status: "booked",
       }),
     })
       .then((res) => res.json())
-      .then((data) => console.log(data));
-    refetch();
-    e.target.reset();
-    setSelectedOption([]);
+      .then((data) => {
+        console.log(data);
+        if (!data.error) {
+          Store.addNotification({
+            title: "Accepeted booking",
+            message: "Sent the room info the guest.",
+            type: "success",
+            insert: "top",
+            isMobile: true,
+            breakpoint: "668px",
+            container: "top-right",
+            animationIn: ["animate__animated", "animate__fadeIn"],
+            animationOut: ["animate__animated", "animate__fadeOut"],
+            dismiss: {
+              duration: 5000,
+              onScreen: true,
+            },
+          });
+          refetch();
+          e.target.reset();
+          setOpenModal(false);
+          setSelectedOption([]);
+        }
+      });
   };
 
   return (
@@ -99,7 +122,7 @@ const HotelManagerDashboard = () => {
                       : booking.bookedRoom?.rooms?.map((item, i) => (
                           <span
                             key={i}
-                            className="bg-green-500 text-white mx-1 text-xl font-bold rounded p-1"
+                            className="inline-block bg-green-500 text-white mx-1 text-xl font-bold rounded p-1"
                           >
                             {item}
                           </span>
@@ -125,7 +148,7 @@ const HotelManagerDashboard = () => {
       </div>
       {/* modal */}
       <div
-        className={`w-screen p-2  min-h-screen bg-slate-500 top-0 left-0 bg-opacity-40 flex items-center justify-center fixed overflow-scroll ${
+        className={`w-screen p-2 mt-8 min-h-screen overflow-y-scroll bg-slate-500 top-0 left-0 bg-opacity-40 flex items-center justify-center fixed overflow-scroll ${
           openModal ? "block" : "hidden"
         }`}
       >
@@ -140,48 +163,38 @@ const HotelManagerDashboard = () => {
           <form onSubmit={handleConfirmBooking} className="flex flex-col gap-1">
             <div>
               <label className="md:text-xl">Guest Name : </label>
-              <input
-                className="form-input"
-                value={singleBooking.guestName}
-                readOnly
-              />
+              <span className="form-input block">
+                {singleBooking.guestName}
+              </span>
             </div>
             <div>
               <label className="md:text-xl">Guest Number : </label>
-              <input
-                className="form-input"
-                value={singleBooking.guestPhone}
-                readOnly
-              />
+              <span className="form-input block">
+                {singleBooking.guestPhone}
+              </span>
             </div>
             <div>
               <label className="md:text-xl">Guest Email : </label>
-              <input
-                className="form-input"
-                value={singleBooking.guestEmail}
-                readOnly
-              />
+              <span className="form-input block">
+                {singleBooking.guestEmail}
+              </span>
             </div>
-            <div className="flex gap-2">
-              <div>
+            <div className="flex justify-between items-center gap-2">
+              <div className="flex-1">
                 <label className="md:text-xl">Guest Quantity : </label>
-                <input
-                  className="form-input"
-                  value={singleBooking.guestQuantity}
-                  readOnly
-                />
+
+                <span className="form-input block">
+                  {singleBooking.guestQuantity}
+                </span>
               </div>
-              <div>
+              <div className="flex-1">
                 <label className="md:text-xl">Room Needed: </label>
-                <input
-                  className="form-input"
-                  value={singleBooking.roomQuantity}
-                  name="roomQuantity"
-                  readOnly
-                />
+                <span id="roomQuantity" className="form-input block">
+                  {singleBooking.roomQuantity}
+                </span>
               </div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex justify-between items-center gap-2">
               <div className=" w-1/2">
                 <label className="md:text-xl">Manager&apos;s Number: </label>
                 <input type="tel" name="managerPhone" className="form-input" />
